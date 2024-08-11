@@ -1,5 +1,6 @@
 package com.sparta.nbcampspringtask.service;
 
+import com.sparta.nbcampspringtask.dto.ScheduleDeleteDto;
 import com.sparta.nbcampspringtask.dto.ScheduleInsertDto;
 import com.sparta.nbcampspringtask.dto.ScheduleSelectDto;
 import com.sparta.nbcampspringtask.dto.ScheduleUpdateDto;
@@ -44,6 +45,25 @@ public class ScheduleService {
 
                 scheduleRepository.update(idx , new Schedule(scheduleUpdateDto));
                 return new ScheduleSelectDto(scheduleRepository.findById(idx));
+            } else {
+                // 비번이 틀렸을 경우
+                throw new IllegalArgumentException("선택한 일정은 존재하지 않습니다.");
+            }
+        } else {
+            // 해당 일정이 존재하지 않을 경우
+            throw new IllegalArgumentException("선택한 일정은 존재하지 않습니다.");
+        }
+    }
+
+    public void deleteSchedule(ScheduleDeleteDto scheduleDeleteDto) {
+        Long idx = scheduleDeleteDto.getIdx();
+        Schedule schedule = scheduleRepository.findById(idx);
+
+        if (Objects.nonNull(schedule)) {
+            // 비밀번호 검증
+            if (Objects.equals(schedule.getPw() , scheduleDeleteDto.getPw())) {
+
+                scheduleRepository.delete(idx);
             } else {
                 // 비번이 틀렸을 경우
                 throw new IllegalArgumentException("선택한 일정은 존재하지 않습니다.");

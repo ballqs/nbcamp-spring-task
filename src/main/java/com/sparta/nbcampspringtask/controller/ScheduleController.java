@@ -1,5 +1,6 @@
 package com.sparta.nbcampspringtask.controller;
 
+import com.sparta.nbcampspringtask.dto.ScheduleDeleteDto;
 import com.sparta.nbcampspringtask.dto.ScheduleInsertDto;
 import com.sparta.nbcampspringtask.dto.ScheduleSelectDto;
 import com.sparta.nbcampspringtask.dto.ScheduleUpdateDto;
@@ -37,9 +38,14 @@ public class ScheduleController {
         return scheduleService.selectConditionsAllSchedule(managerNm , modDt);
     }
 
-        @PatchMapping("/update")
+    @PatchMapping("/update")
     public ScheduleSelectDto updateSchedule(@RequestBody ScheduleUpdateDto scheduleUpdateDto) {
         return scheduleService.updateSchedule(scheduleUpdateDto);
+    }
+
+    @DeleteMapping("/delete")
+    public void deleteSchedule(@RequestBody ScheduleDeleteDto scheduleDeleteDto) {
+        scheduleService.deleteSchedule(scheduleDeleteDto);
     }
 
 }

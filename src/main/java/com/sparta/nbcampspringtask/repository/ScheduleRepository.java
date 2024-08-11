@@ -116,4 +116,9 @@ public class ScheduleRepository {
         String sql = "UPDATE schedule SET content = ?, manager_nm = ? WHERE idx = ?";
         jdbcTemplate.update(sql, schedule.getContent(), schedule.getManagerNm(), idx);
     }
+
+    public void delete(Long idx) {
+        String sql = "DELETE FROM schedule WHERE idx = ?";
+        jdbcTemplate.update(sql , idx);
+    }
 }

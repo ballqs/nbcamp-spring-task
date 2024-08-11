@@ -1,5 +1,6 @@
 package com.sparta.nbcampspringtask.entity;
 
+import com.sparta.nbcampspringtask.dto.ScheduleDeleteDto;
 import com.sparta.nbcampspringtask.dto.ScheduleInsertDto;
 import com.sparta.nbcampspringtask.dto.ScheduleUpdateDto;
 import lombok.Getter;
