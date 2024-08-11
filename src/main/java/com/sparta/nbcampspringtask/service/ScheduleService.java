@@ -4,7 +4,9 @@ import com.sparta.nbcampspringtask.dto.ScheduleDeleteDto;
 import com.sparta.nbcampspringtask.dto.ScheduleInsertDto;
 import com.sparta.nbcampspringtask.dto.ScheduleSelectDto;
 import com.sparta.nbcampspringtask.dto.ScheduleUpdateDto;
+import com.sparta.nbcampspringtask.entity.Manager;
 import com.sparta.nbcampspringtask.entity.Schedule;
+import com.sparta.nbcampspringtask.repository.ManagerRepository;
 import com.sparta.nbcampspringtask.repository.ScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,15 +18,24 @@ import java.util.Objects;
 public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
+    private final ManagerRepository managerRepository;
 
     @Autowired
-    ScheduleService(ScheduleRepository scheduleRepository) {
+    ScheduleService(ScheduleRepository scheduleRepository , ManagerRepository managerRepository) {
         this.scheduleRepository = scheduleRepository;
+        this.managerRepository = managerRepository;
     }
 
+    // ScheduleAndManagerService.java
     public ScheduleSelectDto createSchedule(ScheduleInsertDto scheduleInsertDto) {
-        Long idx = scheduleRepository.insert(new Schedule(scheduleInsertDto));
-        return new ScheduleSelectDto(scheduleRepository.findById(idx));
+        // 해당 담당자가 존재하는 데이터인지?
+        Manager manager = managerRepository.findByIdx(scheduleInsertDto.getManagerIdx());
+        if (Objects.nonNull(manager)) {
+            Long idx = scheduleRepository.insert(new Schedule(scheduleInsertDto));
+            return new ScheduleSelectDto(scheduleRepository.findById(idx));
+        } else {
+            throw new IllegalArgumentException("존재하지 않는 담당자 정보입니다.");
+        }
     }
 
     public ScheduleSelectDto selectSchedule(Long idx) {
@@ -44,6 +55,11 @@ public class ScheduleService {
             if (Objects.equals(schedule.getPw() , scheduleUpdateDto.getPw())) {
 
                 scheduleRepository.update(idx , new Schedule(scheduleUpdateDto));
+
+                // 담당자 명 변경은 managerRepository.update에서...
+                Manager manager = new Manager(scheduleUpdateDto);
+                managerRepository.update(manager.getManagerIdx() , manager);
+
                 return new ScheduleSelectDto(scheduleRepository.findById(idx));
             } else {
                 // 비번이 틀렸을 경우

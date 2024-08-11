@@ -1,7 +1,6 @@
 package com.sparta.nbcampspringtask.repository;
 
 import com.sparta.nbcampspringtask.dto.ScheduleSelectDto;
-import com.sparta.nbcampspringtask.dto.ScheduleUpdateDto;
 import com.sparta.nbcampspringtask.entity.Schedule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -32,13 +31,13 @@ public class ScheduleRepository {
         // DB 저장
         KeyHolder keyHolder = new GeneratedKeyHolder(); // 기본 키를 반환받기 위한 객체
 
-        String sql = "INSERT INTO schedule (content, manager_nm , pw) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO schedule (content, manager_idx , pw) VALUES (?, ?, ?)";
         jdbcTemplate.update( con -> {
                     PreparedStatement preparedStatement = con.prepareStatement(sql,
                             Statement.RETURN_GENERATED_KEYS);
 
                     preparedStatement.setString(1, schedule.getContent());
-                    preparedStatement.setString(2, schedule.getManagerNm());
+                    preparedStatement.setLong(2, schedule.getManagerIdx());
                     preparedStatement.setString(3, schedule.getPw());
                     return preparedStatement;
                 },
@@ -50,22 +49,23 @@ public class ScheduleRepository {
     public List<ScheduleSelectDto> findConditionsAll(String managerNm, String modDt) {
         // DB 조회
         String sql = """
-                    SELECT idx, content, manager_nm , 
-                            DATE_FORMAT(reg_dt , '%Y-%m-%d') AS reg_dt , 
-                            IFNULL(DATE_FORMAT(mod_dt , '%Y-%m-%d'),'') AS mod_dt 
-                    FROM schedule
+                    SELECT s.idx, s.content, s.manager_idx, m.manager_nm , 
+                            DATE_FORMAT(s.reg_dt , '%Y-%m-%d') AS reg_dt , 
+                            IFNULL(DATE_FORMAT(s.mod_dt , '%Y-%m-%d'),'') AS mod_dt 
+                    FROM schedule s
+                        INNER JOIN manager m ON(m.manager_idx = s.manager_idx)
                     """;
 
         List<String> conditions = new ArrayList<>();
         List<Object> parameters = new ArrayList<>();
 
         if (Objects.nonNull(managerNm)) {
-            conditions.add("manager_nm = ?");
+            conditions.add("m.manager_nm = ?");
             parameters.add(managerNm);
         }
 
         if (Objects.nonNull(modDt)) {
-            conditions.add("IFNULL(DATE_FORMAT(mod_dt , '%Y-%m-%d'),'') = ?");
+            conditions.add("IFNULL(DATE_FORMAT(s.mod_dt , '%Y-%m-%d'),'') = ?");
             parameters.add(modDt);
         }
 
@@ -77,10 +77,11 @@ public class ScheduleRepository {
                 // SQL 의 결과로 받아온 Memo 데이터들을 MemoResponseDto 타입으로 변환해줄 메서드
                 Long idx = rs.getLong("idx");
                 String content = rs.getString("content");
+                Long managerIdx = rs.getLong("manager_idx");
                 String managerNm = rs.getString("manager_nm");
                 String regDt = rs.getString("reg_dt");
                 String modDt = rs.getString("mod_dt");
-                return new ScheduleSelectDto(idx, content, managerNm, regDt, modDt);
+                return new ScheduleSelectDto(idx, content, managerIdx , managerNm, regDt, modDt);
             }
         } , parameters.toArray());
         // ★★★동적 쿼리 생성할 경우 담아놓은 컬렉터를 toArray()로 넣을 수 있음!★★★
@@ -89,11 +90,12 @@ public class ScheduleRepository {
     public Schedule findById(Long idx) {
         // DB 조회
         String sql = """
-                        SELECT idx, content, manager_nm , pw,
-                                DATE_FORMAT(reg_dt , '%Y-%m-%d') AS reg_dt , 
-                                IFNULL(DATE_FORMAT(mod_dt , '%Y-%m-%d'),'') AS mod_dt 
-                        FROM schedule 
-                        WHERE idx = ?
+                        SELECT s.idx, s.content, s.manager_idx, m.manager_nm , s.pw,
+                                DATE_FORMAT(s.reg_dt , '%Y-%m-%d') AS reg_dt , 
+                                IFNULL(DATE_FORMAT(s.mod_dt , '%Y-%m-%d'),'') AS mod_dt 
+                        FROM schedule s
+                            INNER JOIN manager m ON(m.manager_idx = s.manager_idx)
+                        WHERE s.idx = ?
                     """;
 
         return jdbcTemplate.query(sql, resultSet -> {
@@ -101,6 +103,7 @@ public class ScheduleRepository {
                 Schedule schedule = new Schedule();
                 schedule.setIdx(resultSet.getLong("idx"));
                 schedule.setContent(resultSet.getString("content"));
+                schedule.setManagerIdx(resultSet.getLong("manager_idx"));
                 schedule.setManagerNm(resultSet.getString("manager_nm"));
                 schedule.setPw(resultSet.getString("pw"));
                 schedule.setRegDt(resultSet.getString("reg_dt"));
@@ -113,8 +116,8 @@ public class ScheduleRepository {
     }
 
     public void update(Long idx, Schedule schedule) {
-        String sql = "UPDATE schedule SET content = ?, manager_nm = ? WHERE idx = ?";
-        jdbcTemplate.update(sql, schedule.getContent(), schedule.getManagerNm(), idx);
+        String sql = "UPDATE schedule SET content = ? WHERE idx = ?";
+        jdbcTemplate.update(sql, schedule.getContent(), idx);
     }
 
     public void delete(Long idx) {

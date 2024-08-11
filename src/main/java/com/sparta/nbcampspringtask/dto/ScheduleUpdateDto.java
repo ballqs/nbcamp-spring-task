@@ -6,6 +6,7 @@ import lombok.Getter;
 public class ScheduleUpdateDto {
     private Long idx;
     private String content;
+    private Long managerIdx;
     private String managerNm;
     private String pw;
 }
