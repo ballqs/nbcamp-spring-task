@@ -4,10 +4,7 @@ import com.sparta.nbcampspringtask.dto.ScheduleInsertDto;
 import com.sparta.nbcampspringtask.dto.ScheduleSelectDto;
 import com.sparta.nbcampspringtask.service.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
@@ -20,8 +17,13 @@ public class ScheduleController {
         this.scheduleService = scheduleService;
     }
 
-    @PostMapping("/create")
+    @PostMapping("/schedule")
     public ScheduleSelectDto createSchedule(@RequestBody ScheduleInsertDto scheduleInsertDto) {
         return scheduleService.createSchedule(scheduleInsertDto);
+    }
+
+    @GetMapping("/schedule")
+    public ScheduleSelectDto selectSchedule(@RequestParam Long idx) {
+        return scheduleService.selectSchedule(idx);
     }
 }

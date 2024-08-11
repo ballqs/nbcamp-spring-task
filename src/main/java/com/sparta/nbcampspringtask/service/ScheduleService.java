@@ -21,4 +21,8 @@ public class ScheduleService {
         Long idx = scheduleRepository.insert(new Schedule(scheduleInsertDto));
         return new ScheduleSelectDto(scheduleRepository.findById(idx));
     }
+
+    public ScheduleSelectDto selectSchedule(Long idx) {
+        return new ScheduleSelectDto(scheduleRepository.findById(idx));
+    }
 }
