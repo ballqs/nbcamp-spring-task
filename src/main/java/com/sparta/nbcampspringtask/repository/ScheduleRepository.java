@@ -46,7 +46,7 @@ public class ScheduleRepository {
         return keyHolder.getKey().longValue();
     }
 
-    public List<ScheduleSelectDto> findConditionsAll(String managerNm, String modDt) {
+    public List<ScheduleSelectDto> findConditionsAll(String managerNm, String modDt, int pageNum, int pageSize) {
         // DB 조회
         String sql = """
                     SELECT s.idx, s.content, s.manager_idx, m.manager_nm , 
@@ -70,6 +70,14 @@ public class ScheduleRepository {
         }
 
         sql = sql + ((conditions.isEmpty()) ? "" : " WHERE " + String.join(" AND " , conditions)) + " ORDER BY mod_dt DESC";
+
+        if (Objects.nonNull(pageNum) && Objects.nonNull(pageSize)) {
+            int start = pageSize * (pageNum - 1);
+            int end = pageSize * pageNum;
+            sql += " limit ? , ? ";
+            parameters.add(start);
+            parameters.add(end);
+        }
 
         return jdbcTemplate.query(sql, new RowMapper<ScheduleSelectDto>() {
             @Override

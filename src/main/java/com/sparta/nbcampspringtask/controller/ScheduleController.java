@@ -34,8 +34,10 @@ public class ScheduleController {
     @GetMapping("/select-conditions-all")
     public List<ScheduleSelectDto> selectConditionsAllSchedule(
                                                     @RequestParam(required = false) String managerNm ,
-                                                    @RequestParam(required = false) String modDt) {
-        return scheduleService.selectConditionsAllSchedule(managerNm , modDt);
+                                                    @RequestParam(required = false) String modDt ,
+                                                    @RequestParam(required = false) int pageNum ,
+                                                    @RequestParam(required = false) int pageSize) {
+        return scheduleService.selectConditionsAllSchedule(managerNm , modDt , pageNum , pageSize);
     }
 
     @PatchMapping("/update")
