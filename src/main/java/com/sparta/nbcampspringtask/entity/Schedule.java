@@ -1,6 +1,7 @@
 package com.sparta.nbcampspringtask.entity;
 
 import com.sparta.nbcampspringtask.dto.ScheduleInsertDto;
+import com.sparta.nbcampspringtask.dto.ScheduleUpdateDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,5 +21,10 @@ public class Schedule {
         this.content = scheduleInsertDto.getContent();
         this.managerNm = scheduleInsertDto.getManagerNm();
         this.pw = scheduleInsertDto.getPw();
+    }
+
+    public Schedule(ScheduleUpdateDto scheduleUpdateDto) {
+        this.content = scheduleUpdateDto.getContent();
+        this.managerNm = scheduleUpdateDto.getManagerNm();
     }
 }

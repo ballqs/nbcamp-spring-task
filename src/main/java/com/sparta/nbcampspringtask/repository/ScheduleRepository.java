@@ -1,6 +1,7 @@
 package com.sparta.nbcampspringtask.repository;
 
 import com.sparta.nbcampspringtask.dto.ScheduleSelectDto;
+import com.sparta.nbcampspringtask.dto.ScheduleUpdateDto;
 import com.sparta.nbcampspringtask.entity.Schedule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -46,31 +47,6 @@ public class ScheduleRepository {
         return keyHolder.getKey().longValue();
     }
 
-    public Schedule findById(Long idx) {
-        // DB 조회
-        String sql = """
-                        SELECT idx, content, manager_nm , 
-                                DATE_FORMAT(reg_dt , '%Y-%m-%d') AS reg_dt , 
-                                IFNULL(DATE_FORMAT(mod_dt , '%Y-%m-%d'),'') AS mod_dt 
-                        FROM schedule 
-                        WHERE idx = ?
-                    """;
-
-        return jdbcTemplate.query(sql, resultSet -> {
-            if(resultSet.next()) {
-                Schedule schedule = new Schedule();
-                schedule.setIdx(resultSet.getLong("idx"));
-                schedule.setContent(resultSet.getString("content"));
-                schedule.setManagerNm(resultSet.getString("manager_nm"));
-                schedule.setRegDt(resultSet.getString("reg_dt"));
-                schedule.setModDt(resultSet.getString("mod_dt"));
-                return schedule;
-            } else {
-                return null;
-            }
-        }, idx);
-    }
-
     public List<ScheduleSelectDto> findConditionsAll(String managerNm, String modDt) {
         // DB 조회
         String sql = """
@@ -107,6 +83,37 @@ public class ScheduleRepository {
                 return new ScheduleSelectDto(idx, content, managerNm, regDt, modDt);
             }
         } , parameters.toArray());
-        // 동적 쿼리 생성할 경우 담아놓은 컬렉터를 toArray()로 넣을 수 있음!
+        // ★★★동적 쿼리 생성할 경우 담아놓은 컬렉터를 toArray()로 넣을 수 있음!★★★
+    }
+
+    public Schedule findById(Long idx) {
+        // DB 조회
+        String sql = """
+                        SELECT idx, content, manager_nm , pw,
+                                DATE_FORMAT(reg_dt , '%Y-%m-%d') AS reg_dt , 
+                                IFNULL(DATE_FORMAT(mod_dt , '%Y-%m-%d'),'') AS mod_dt 
+                        FROM schedule 
+                        WHERE idx = ?
+                    """;
+
+        return jdbcTemplate.query(sql, resultSet -> {
+            if(resultSet.next()) {
+                Schedule schedule = new Schedule();
+                schedule.setIdx(resultSet.getLong("idx"));
+                schedule.setContent(resultSet.getString("content"));
+                schedule.setManagerNm(resultSet.getString("manager_nm"));
+                schedule.setPw(resultSet.getString("pw"));
+                schedule.setRegDt(resultSet.getString("reg_dt"));
+                schedule.setModDt(resultSet.getString("mod_dt"));
+                return schedule;
+            } else {
+                return null;
+            }
+        }, idx);
+    }
+
+    public void update(Long idx, Schedule schedule) {
+        String sql = "UPDATE schedule SET content = ?, manager_nm = ? WHERE idx = ?";
+        jdbcTemplate.update(sql, schedule.getContent(), schedule.getManagerNm(), idx);
     }
 }

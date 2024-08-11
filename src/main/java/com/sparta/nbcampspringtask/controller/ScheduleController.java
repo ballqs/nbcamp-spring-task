@@ -2,6 +2,7 @@ package com.sparta.nbcampspringtask.controller;
 
 import com.sparta.nbcampspringtask.dto.ScheduleInsertDto;
 import com.sparta.nbcampspringtask.dto.ScheduleSelectDto;
+import com.sparta.nbcampspringtask.dto.ScheduleUpdateDto;
 import com.sparta.nbcampspringtask.service.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -36,5 +37,9 @@ public class ScheduleController {
         return scheduleService.selectConditionsAllSchedule(managerNm , modDt);
     }
 
+        @PatchMapping("/update")
+    public ScheduleSelectDto updateSchedule(@RequestBody ScheduleUpdateDto scheduleUpdateDto) {
+        return scheduleService.updateSchedule(scheduleUpdateDto);
+    }
 
 }
