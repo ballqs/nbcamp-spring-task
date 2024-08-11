@@ -7,6 +7,8 @@ import com.sparta.nbcampspringtask.repository.ScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ScheduleService {
 
@@ -24,5 +26,9 @@ public class ScheduleService {
 
     public ScheduleSelectDto selectSchedule(Long idx) {
         return new ScheduleSelectDto(scheduleRepository.findById(idx));
+    }
+
+    public List<ScheduleSelectDto> selectConditionsAllSchedule(String managerNm, String modDt) {
+        return scheduleRepository.findConditionsAll(managerNm , modDt);
     }
 }

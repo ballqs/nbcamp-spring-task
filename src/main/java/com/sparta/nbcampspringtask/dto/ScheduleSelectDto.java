@@ -1,8 +1,10 @@
 package com.sparta.nbcampspringtask.dto;
 
 import com.sparta.nbcampspringtask.entity.Schedule;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+@AllArgsConstructor
 @Getter
 public class ScheduleSelectDto {
     private Long idx;
