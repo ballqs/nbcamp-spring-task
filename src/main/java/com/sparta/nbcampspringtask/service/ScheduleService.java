@@ -59,11 +59,15 @@ public class ScheduleService {
             // 비밀번호 검증
             if (Objects.equals(schedule.getPw() , scheduleUpdateDto.getPw())) {
 
-                scheduleRepository.update(idx , new Schedule(scheduleUpdateDto));
+                if (Objects.nonNull(scheduleUpdateDto.getManagerIdx())) {
+                    Manager manager = managerRepository.findByIdx(scheduleUpdateDto.getManagerIdx());
+                    if (Objects.isNull(manager)) {
+                        // 해당 담당자는 존재하지 않음!
+                        throw new IllegalArgumentException("입력값이 적합하지 않습니다.");
+                    }
+                }
 
-                // 담당자 명 변경은 managerRepository.update에서...
-                Manager manager = new Manager(scheduleUpdateDto);
-                managerRepository.update(manager.getManagerIdx() , manager);
+                scheduleRepository.update(idx , new Schedule(scheduleUpdateDto));
 
                 return new ScheduleSelectDto(scheduleRepository.findById(idx));
             } else {

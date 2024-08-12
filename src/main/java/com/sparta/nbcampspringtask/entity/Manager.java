@@ -20,9 +20,4 @@ public class Manager {
         this.managerNm = managerInsertDto.getManagerNm();
         this.email = managerInsertDto.getEmail();
     }
-
-    public Manager(ScheduleUpdateDto scheduleUpdateDto) {
-        this.managerIdx = scheduleUpdateDto.getManagerIdx();
-        this.managerNm = scheduleUpdateDto.getManagerNm();
-    }
 }

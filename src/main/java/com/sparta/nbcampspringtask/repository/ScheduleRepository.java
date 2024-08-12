@@ -124,8 +124,28 @@ public class ScheduleRepository {
     }
 
     public void update(Long idx, Schedule schedule) {
-        String sql = "UPDATE schedule SET content = ? WHERE idx = ?";
-        jdbcTemplate.update(sql, schedule.getContent(), idx);
+        String sql = "UPDATE schedule SET ";
+
+        List<String> conditions = new ArrayList<>();
+        List<Object> parameters = new ArrayList<>();
+
+        if (Objects.nonNull(schedule.getContent())) {
+            conditions.add("content = ?");
+            parameters.add(schedule.getContent());
+        }
+
+        if (Objects.nonNull(schedule.getManagerIdx())) {
+            conditions.add("manager_idx = ?");
+            parameters.add(schedule.getManagerIdx());
+        }
+
+        if (!conditions.isEmpty()) {
+            sql = sql + String.join(" , " , conditions);
+            sql += " WHERE idx = ?";
+            parameters.add(idx);
+
+            jdbcTemplate.update(sql, parameters.toArray());
+        }
     }
 
     public void delete(Long idx) {
