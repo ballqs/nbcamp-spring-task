@@ -401,7 +401,7 @@ Connection: keep-alive
 ```SQL
 -- nbc_spring_task 데이터베이스 구조 내보내기
 DROP DATABASE IF EXISTS `nbc_spring_task`;
-CREATE DATABASE IF NOT EXISTS `nbc_spring_task` /*!40100 DEFAULT CHARACTER SET utf32 COLLATE utf32_general_ci */;
+CREATE DATABASE IF NOT EXISTS `nbc_spring_task`;
 USE `nbc_spring_task`;
 
 -- 테이블 nbc_spring_task.manager 구조 내보내기
