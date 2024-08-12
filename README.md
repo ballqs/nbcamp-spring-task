@@ -392,7 +392,7 @@ Connection: keep-alive
 
 ## ⚙ ERD
 
-내용
+![스프링 개인 과제](https://github.com/user-attachments/assets/bf77f1cf-233f-4130-8c6c-040d99dfc090)
 
 ---
 
@@ -427,4 +427,33 @@ CREATE TABLE IF NOT EXISTS `schedule` (
   `mod_dt` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '수정일',
   PRIMARY KEY (`idx`)
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf32 COLLATE=utf32_general_ci COMMENT='일정';
+```
+
+## 💿 파일 및 디렉토리
+
+```
+com/
+└── sparta/
+    └── nbcampspringtask/
+        ├── controller/
+        │   ├── ManagerController.java
+        │   └── ScheduleController.java
+        ├── dto/
+        │   ├── ManagerInsertDto.java
+        │   ├── ManagerSelectDto.java
+        │   ├── ResponseDto.java
+        │   ├── ScheduleDeleteDto.java
+        │   ├── ScheduleInsertDto.java
+        │   ├── ScheduleSelectDto.java
+        │   └── ScheduleUpdateDto.java
+        ├── entity/
+        │   ├── Manager.java
+        │   └── Schedule.java
+        ├── repository/
+        │   ├── ManagerRepository.java
+        │   └── ScheduleRepository.java
+        ├── service/
+        │   ├── ManagerService.java
+        │   └── ScheduleService.java
+        └── NbcampSpringTaskApplication.java
 ```
