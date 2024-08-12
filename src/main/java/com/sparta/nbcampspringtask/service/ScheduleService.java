@@ -34,12 +34,17 @@ public class ScheduleService {
             Long idx = scheduleRepository.insert(new Schedule(scheduleInsertDto));
             return new ScheduleSelectDto(scheduleRepository.findById(idx));
         } else {
-            throw new IllegalArgumentException("존재하지 않는 담당자 정보입니다.");
+            throw new NullPointerException("존재하지 않는 담당자 정보입니다.");
         }
     }
 
     public ScheduleSelectDto selectSchedule(Long idx) {
-        return new ScheduleSelectDto(scheduleRepository.findById(idx));
+        Schedule schedule = scheduleRepository.findById(idx);
+        if (Objects.nonNull(schedule)) {
+            return new ScheduleSelectDto(schedule);
+        } else {
+            throw new NullPointerException("존재하지 않는 일정 정보입니다.");
+        }
     }
 
     public List<ScheduleSelectDto> selectConditionsAllSchedule(String managerNm, String modDt, int pageNum, int pageSize) {
@@ -63,11 +68,11 @@ public class ScheduleService {
                 return new ScheduleSelectDto(scheduleRepository.findById(idx));
             } else {
                 // 비번이 틀렸을 경우
-                throw new IllegalArgumentException("선택한 일정은 존재하지 않습니다.");
+                throw new IllegalArgumentException("입력값이 적합하지 않습니다.");
             }
         } else {
             // 해당 일정이 존재하지 않을 경우
-            throw new IllegalArgumentException("선택한 일정은 존재하지 않습니다.");
+            throw new NullPointerException("선택한 일정은 존재하지 않습니다.");
         }
     }
 
@@ -82,11 +87,11 @@ public class ScheduleService {
                 scheduleRepository.delete(idx);
             } else {
                 // 비번이 틀렸을 경우
-                throw new IllegalArgumentException("선택한 일정은 존재하지 않습니다.");
+                throw new IllegalArgumentException("입력값이 적합하지 않습니다.");
             }
         } else {
             // 해당 일정이 존재하지 않을 경우
-            throw new IllegalArgumentException("선택한 일정은 존재하지 않습니다.");
+            throw new NullPointerException("선택한 일정은 존재하지 않습니다.");
         }
     }
 }

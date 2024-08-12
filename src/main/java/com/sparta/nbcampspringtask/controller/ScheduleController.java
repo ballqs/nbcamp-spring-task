@@ -1,11 +1,10 @@
 package com.sparta.nbcampspringtask.controller;
 
-import com.sparta.nbcampspringtask.dto.ScheduleDeleteDto;
-import com.sparta.nbcampspringtask.dto.ScheduleInsertDto;
-import com.sparta.nbcampspringtask.dto.ScheduleSelectDto;
-import com.sparta.nbcampspringtask.dto.ScheduleUpdateDto;
+import com.sparta.nbcampspringtask.dto.*;
 import com.sparta.nbcampspringtask.service.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,32 +21,51 @@ public class ScheduleController {
     }
 
     @PostMapping("/create")
-    public ScheduleSelectDto createSchedule(@RequestBody ScheduleInsertDto scheduleInsertDto) {
-        return scheduleService.createSchedule(scheduleInsertDto);
+    public ResponseEntity<ResponseDto<ScheduleSelectDto>> createSchedule(@RequestBody ScheduleInsertDto scheduleInsertDto) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDto<>(HttpStatus.OK.value(), scheduleService.createSchedule(scheduleInsertDto) , "성공적으로 등록완료했습니다."));
     }
 
     @GetMapping("/select")
-    public ScheduleSelectDto selectSchedule(@RequestParam Long idx) {
-        return scheduleService.selectSchedule(idx);
+    public ResponseEntity<ResponseDto<ScheduleSelectDto>> selectSchedule(@RequestParam Long idx) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDto<>(HttpStatus.OK.value(), scheduleService.selectSchedule(idx) , "성공적으로 조회완료했습니다."));
     }
 
     @GetMapping("/select-conditions-all")
-    public List<ScheduleSelectDto> selectConditionsAllSchedule(
+    public ResponseEntity<ResponseDto<List<ScheduleSelectDto>>> selectConditionsAllSchedule(
                                                     @RequestParam(required = false) String managerNm ,
                                                     @RequestParam(required = false) String modDt ,
                                                     @RequestParam(required = false) int pageNum ,
                                                     @RequestParam(required = false) int pageSize) {
-        return scheduleService.selectConditionsAllSchedule(managerNm , modDt , pageNum , pageSize);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDto<>(HttpStatus.OK.value(), scheduleService.selectConditionsAllSchedule(managerNm , modDt , pageNum , pageSize) , "성공적으로 조회완료했습니다."));
     }
 
     @PatchMapping("/update")
-    public ScheduleSelectDto updateSchedule(@RequestBody ScheduleUpdateDto scheduleUpdateDto) {
-        return scheduleService.updateSchedule(scheduleUpdateDto);
+    public ResponseEntity<ResponseDto<ScheduleSelectDto>> updateSchedule(@RequestBody ScheduleUpdateDto scheduleUpdateDto) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDto<>(HttpStatus.OK.value(), scheduleService.updateSchedule(scheduleUpdateDto) , "성공적으로 수정완료했습니다."));
     }
 
     @DeleteMapping("/delete")
-    public void deleteSchedule(@RequestBody ScheduleDeleteDto scheduleDeleteDto) {
+    public ResponseEntity<ResponseDto<String>> deleteSchedule(@RequestBody ScheduleDeleteDto scheduleDeleteDto) {
         scheduleService.deleteSchedule(scheduleDeleteDto);
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto<>(HttpStatus.OK.value(), "" , "성공적으로 삭제완료했습니다."));
+    }
+
+    @ExceptionHandler(value = IllegalArgumentException.class)
+    public ResponseEntity<ResponseDto<String>> illegalArgumentHandle(IllegalArgumentException e){
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ResponseDto<>(HttpStatus.FORBIDDEN.value() , "" , e.getMessage()));
+    }
+
+    @ExceptionHandler(value = NullPointerException.class)
+    public ResponseEntity<ResponseDto<String>> nullPointerHandle(NullPointerException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseDto<>(HttpStatus.NOT_FOUND.value() , "" , e.getMessage()));
     }
 
 }

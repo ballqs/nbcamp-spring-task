@@ -2,8 +2,11 @@ package com.sparta.nbcampspringtask.controller;
 
 import com.sparta.nbcampspringtask.dto.ManagerInsertDto;
 import com.sparta.nbcampspringtask.dto.ManagerSelectDto;
+import com.sparta.nbcampspringtask.dto.ResponseDto;
 import com.sparta.nbcampspringtask.service.ManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,8 +24,10 @@ public class ManagerController {
     }
 
     @PostMapping("/create")
-    public ManagerSelectDto createManager(@RequestBody ManagerInsertDto managerInsertDto) {
-        return managerService.createManager(managerInsertDto);
+    public ResponseEntity<ResponseDto<ManagerSelectDto>> createManager(@RequestBody ManagerInsertDto managerInsertDto) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDto<>(HttpStatus.OK.value(),managerService.createManager(managerInsertDto) ,"성공적으로 등록완료했습니다."));
     }
 
 }
