@@ -46,7 +46,7 @@ public class ScheduleRepository {
         return keyHolder.getKey().longValue();
     }
 
-    public List<ScheduleSelectDto> findConditionsAll(String managerNm, String modDt, int pageNum, int pageSize) {
+    public List<Schedule> findConditionsAll(String managerNm, String modDt, Integer pageNum, Integer pageSize) {
         // DB 조회
         String sql = """
                     SELECT s.idx, s.content, s.manager_idx, m.manager_nm , 
@@ -79,9 +79,9 @@ public class ScheduleRepository {
             parameters.add(end);
         }
 
-        return jdbcTemplate.query(sql, new RowMapper<ScheduleSelectDto>() {
+        return jdbcTemplate.query(sql, new RowMapper<Schedule>() {
             @Override
-            public ScheduleSelectDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+            public Schedule mapRow(ResultSet rs, int rowNum) throws SQLException {
                 // SQL 의 결과로 받아온 Memo 데이터들을 MemoResponseDto 타입으로 변환해줄 메서드
                 Long idx = rs.getLong("idx");
                 String content = rs.getString("content");
@@ -89,7 +89,7 @@ public class ScheduleRepository {
                 String managerNm = rs.getString("manager_nm");
                 String regDt = rs.getString("reg_dt");
                 String modDt = rs.getString("mod_dt");
-                return new ScheduleSelectDto(idx, content, managerIdx , managerNm, regDt, modDt);
+                return new Schedule(idx, content, managerIdx , managerNm, regDt, modDt);
             }
         } , parameters.toArray());
         // ★★★동적 쿼리 생성할 경우 담아놓은 컬렉터를 toArray()로 넣을 수 있음!★★★

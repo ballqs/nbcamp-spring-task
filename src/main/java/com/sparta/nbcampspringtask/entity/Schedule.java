@@ -28,4 +28,13 @@ public class Schedule {
         this.content = scheduleUpdateDto.getContent();
         this.managerIdx = scheduleUpdateDto.getManagerIdx();
     }
+
+    public Schedule(Long idx, String content, Long managerIdx, String managerNm, String regDt, String modDt) {
+        this.idx = idx;
+        this.content = content;
+        this.managerIdx = managerIdx;
+        this.managerNm = managerNm;
+        this.regDt = regDt;
+        this.modDt = modDt;
+    }
 }

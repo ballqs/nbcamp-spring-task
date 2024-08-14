@@ -47,8 +47,8 @@ public class ScheduleService {
         }
     }
 
-    public List<ScheduleSelectDto> selectConditionsAllSchedule(String managerNm, String modDt, int pageNum, int pageSize) {
-        return scheduleRepository.findConditionsAll(managerNm , modDt , pageNum , pageSize);
+    public List<ScheduleSelectDto> selectConditionsAllSchedule(String managerNm, String modDt, Integer pageNum, Integer pageSize) {
+        return scheduleRepository.findConditionsAll(managerNm , modDt , pageNum , pageSize).stream().map(ScheduleSelectDto::new).toList();
     }
 
     public ScheduleSelectDto updateSchedule(ScheduleUpdateDto scheduleUpdateDto) {

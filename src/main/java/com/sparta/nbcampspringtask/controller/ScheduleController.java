@@ -42,8 +42,8 @@ public class ScheduleController {
     public ResponseEntity<ResponseDto<List<ScheduleSelectDto>>> selectConditionsAllSchedule(
                                                     @RequestParam(required = false) String managerNm ,
                                                     @RequestParam(required = false) String modDt ,
-                                                    @RequestParam(required = false) int pageNum ,
-                                                    @RequestParam(required = false) int pageSize) {
+                                                    @RequestParam(required = false) Integer pageNum ,
+                                                    @RequestParam(required = false) Integer pageSize) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new ResponseDto<>(HttpStatus.OK.value(), scheduleService.selectConditionsAllSchedule(managerNm , modDt , pageNum , pageSize) , "성공적으로 조회완료했습니다."));
