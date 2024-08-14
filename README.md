@@ -429,6 +429,8 @@ CREATE TABLE IF NOT EXISTS `schedule` (
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf32 COLLATE=utf32_general_ci COMMENT='일정';
 ```
 
+---
+
 ## 💿 파일 및 디렉토리
 
 ```
