@@ -1,12 +1,7 @@
 package com.sparta.nbcampspringtask.service;
 
-import com.sparta.nbcampspringtask.dto.ScheduleDeleteDto;
-import com.sparta.nbcampspringtask.dto.ScheduleInsertDto;
-import com.sparta.nbcampspringtask.dto.ScheduleSelectDto;
-import com.sparta.nbcampspringtask.dto.ScheduleUpdateDto;
-import com.sparta.nbcampspringtask.entity.Manager;
+import com.sparta.nbcampspringtask.dto.*;
 import com.sparta.nbcampspringtask.entity.Schedule;
-import com.sparta.nbcampspringtask.repository.ManagerRepository;
 import com.sparta.nbcampspringtask.repository.ScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,19 +13,23 @@ import java.util.Objects;
 public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
-    private final ManagerRepository managerRepository;
+
+    // 피드백에 의한 수정사항
+    // 각각의 도메인은 각자 관리
+    // 매니저 service가 매니저 repository를 di 하고, 스케줄 service는 매니저 service를 di하기
+    private final ManagerService managerService;
 
     @Autowired
-    ScheduleService(ScheduleRepository scheduleRepository , ManagerRepository managerRepository) {
+    ScheduleService(ScheduleRepository scheduleRepository , ManagerService managerService) {
         this.scheduleRepository = scheduleRepository;
-        this.managerRepository = managerRepository;
+        this.managerService = managerService;
     }
 
     // ScheduleAndManagerService.java
     public ScheduleSelectDto createSchedule(ScheduleInsertDto scheduleInsertDto) {
         // 해당 담당자가 존재하는 데이터인지?
-        Manager manager = managerRepository.findByIdx(scheduleInsertDto.getManagerIdx());
-        if (Objects.nonNull(manager)) {
+        ManagerSelectDto managerSelectDto = managerService.selectManager(scheduleInsertDto.getManagerIdx());
+        if (Objects.nonNull(managerSelectDto)) {
             Long idx = scheduleRepository.insert(new Schedule(scheduleInsertDto));
             return new ScheduleSelectDto(scheduleRepository.findById(idx));
         } else {
@@ -51,8 +50,7 @@ public class ScheduleService {
         return scheduleRepository.findConditionsAll(managerNm , modDt , pageNum , pageSize).stream().map(ScheduleSelectDto::new).toList();
     }
 
-    public ScheduleSelectDto updateSchedule(ScheduleUpdateDto scheduleUpdateDto) {
-        Long idx = scheduleUpdateDto.getIdx();
+    public ScheduleSelectDto updateSchedule(Long idx , ScheduleUpdateDto scheduleUpdateDto) {
         Schedule schedule = scheduleRepository.findById(idx);
 
         if (Objects.nonNull(schedule)) {
@@ -60,8 +58,8 @@ public class ScheduleService {
             if (Objects.equals(schedule.getPw() , scheduleUpdateDto.getPw())) {
 
                 if (Objects.nonNull(scheduleUpdateDto.getManagerIdx())) {
-                    Manager manager = managerRepository.findByIdx(scheduleUpdateDto.getManagerIdx());
-                    if (Objects.isNull(manager)) {
+                    ManagerSelectDto managerSelectDto = managerService.selectManager(scheduleUpdateDto.getManagerIdx());
+                    if (Objects.isNull(managerSelectDto)) {
                         // 해당 담당자는 존재하지 않음!
                         throw new IllegalArgumentException("입력값이 적합하지 않습니다.");
                     }
@@ -80,8 +78,7 @@ public class ScheduleService {
         }
     }
 
-    public void deleteSchedule(ScheduleDeleteDto scheduleDeleteDto) {
-        Long idx = scheduleDeleteDto.getIdx();
+    public void deleteSchedule(Long idx , ScheduleDeleteDto scheduleDeleteDto) {
         Schedule schedule = scheduleRepository.findById(idx);
 
         if (Objects.nonNull(schedule)) {

@@ -21,4 +21,8 @@ public class ManagerService {
         Long idx = managerRepository.insert(new Manager(managerInsertDto));
         return new ManagerSelectDto(managerRepository.findByIdx(idx));
     }
+
+    public ManagerSelectDto selectManager(Long idx) {
+        return new ManagerSelectDto(managerRepository.findByIdx(idx));
+    }
 }

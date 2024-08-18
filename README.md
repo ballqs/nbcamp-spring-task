@@ -41,7 +41,7 @@ DB에 접근하기 위해 사용 된 Connect는 JdbcTemplate 입니다.
 ##### Example request
 
 ``` http request
-POST http://localhost:9090/api/schedule/create
+POST http://localhost:9090/api/v1/schedules
 Content-Type: application/json
 
 {
@@ -105,7 +105,7 @@ Connection: keep-alive
 ##### Example request
 
 ``` http request
-GET http://localhost:9090/api/schedule/select?idx=15
+GET http://localhost:9090/api/v1/schedules/15
 Content-Type: application/json
 ```
 
@@ -166,7 +166,7 @@ Connection: keep-alive
 ##### Example request
 
 ``` http request
-GET http://localhost:9090/api/schedule/select-conditions-all?modDt=2024-08-11&managerNm=담당자&pageNum=1&pageSize=10
+GET http://localhost:9090/api/v1/schedules?modDt=2024-08-11&managerNm=담당자&pageNum=1&pageSize=10
 Content-Type: application/json
 ```
 
@@ -229,10 +229,9 @@ Connection: keep-alive
 ##### Example request
 
 ``` http request
-PATCH http://localhost:9090/api/schedule/update
+PATCH http://localhost:9090/api/v1/schedules/11
 Content-Type: application/json
 {
-    "idx":11,
     "content": "변경한내용",
     "managerIdx": 2,
     "pw": "내용3"
@@ -294,10 +293,9 @@ Connection: keep-alive
 ##### Example request
 
 ``` http request
-DELETE http://localhost:9090/api/schedule/delete
+DELETE http://localhost:9090/api/v1/schedules/15
 Content-Type: application/json
 {
-    "idx" : 15,
     "pw"  : "142"
 }
 ```
@@ -344,7 +342,7 @@ Connection: keep-alive
 ##### Example request
 
 ``` http request
-POST http://localhost:9090/api/manager/create
+POST http://localhost:9090/api/v2/managers
 Content-Type: application/json
 
 {

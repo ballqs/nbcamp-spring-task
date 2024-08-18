@@ -3,7 +3,6 @@ package com.sparta.nbcampspringtask.controller;
 import com.sparta.nbcampspringtask.dto.*;
 import com.sparta.nbcampspringtask.service.ScheduleService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/schedule")
+@RequestMapping("/api/v1")
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
@@ -31,7 +30,7 @@ public class ScheduleController {
      * @return 등록된 일정 정보와 성공 메시지를 포함하는 ResponseEntity 객체
      * @author 황호진
      */
-    @PostMapping("/create")
+    @PostMapping("/schedules")
     public ResponseEntity<ResponseDto<ScheduleSelectDto>> createSchedule(@Valid @RequestBody ScheduleInsertDto scheduleInsertDto) {
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -45,11 +44,11 @@ public class ScheduleController {
      * @return 조회된 일정 정보와 성공 메시지를 포함하는 ResponseEntity 객체
      * @author 황호진
      */
-    @GetMapping("/select")
-    public ResponseEntity<ResponseDto<ScheduleSelectDto>> selectSchedule(@RequestParam Long idx) {
+    @GetMapping("/schedules/{idx}")
+    public ResponseEntity<ResponseDto<ScheduleSelectDto>> selectSchedule(@PathVariable Long idx) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(new ResponseDto<>(HttpStatus.OK.value(), scheduleService.selectSchedule( idx) , "성공적으로 조회완료했습니다."));
+                .body(new ResponseDto<>(HttpStatus.OK.value(), scheduleService.selectSchedule(idx) , "성공적으로 조회완료했습니다."));
     }
 
     /**
@@ -62,7 +61,7 @@ public class ScheduleController {
      * @return 조건에 따라 조회된 일정 목록과 성공 메시지를 포함하는 ResponseEntity 객체
      * @author 황호진
      */
-    @GetMapping("/select-conditions-all")
+    @GetMapping("/schedules")
     public ResponseEntity<ResponseDto<List<ScheduleSelectDto>>> selectConditionsAllSchedule(
                                                     @RequestParam(required = false) String managerNm ,
                                                     @RequestParam(required = false) String modDt ,
@@ -80,11 +79,12 @@ public class ScheduleController {
      * @return 수정된 일정 정보와 성공 메시지를 포함하는 ResponseEntity 객체
      * @author 황호진
      */
-    @PatchMapping("/update")
-    public ResponseEntity<ResponseDto<ScheduleSelectDto>> updateSchedule(@Valid @RequestBody ScheduleUpdateDto scheduleUpdateDto) {
+    @PatchMapping("/schedules/{idx}")
+    public ResponseEntity<ResponseDto<ScheduleSelectDto>> updateSchedule(@PathVariable Long idx ,
+                                                                         @Valid @RequestBody ScheduleUpdateDto scheduleUpdateDto) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(new ResponseDto<>(HttpStatus.OK.value(), scheduleService.updateSchedule(scheduleUpdateDto) , "성공적으로 수정완료했습니다."));
+                .body(new ResponseDto<>(HttpStatus.OK.value(), scheduleService.updateSchedule(idx , scheduleUpdateDto) , "성공적으로 수정완료했습니다."));
     }
 
     /**
@@ -94,9 +94,10 @@ public class ScheduleController {
      * @return 삭제 작업의 성공 메시지를 포함하는 ResponseEntity 객체
      * @author 황호진
      */
-    @DeleteMapping("/delete")
-    public ResponseEntity<ResponseDto<String>> deleteSchedule(@Valid @RequestBody ScheduleDeleteDto scheduleDeleteDto) {
-        scheduleService.deleteSchedule(scheduleDeleteDto);
+    @DeleteMapping("/schedules/{idx}")
+    public ResponseEntity<ResponseDto<String>> deleteSchedule(@PathVariable Long idx ,
+                                                              @Valid @RequestBody ScheduleDeleteDto scheduleDeleteDto) {
+        scheduleService.deleteSchedule(idx , scheduleDeleteDto);
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto<>(HttpStatus.OK.value(), "" , "성공적으로 삭제완료했습니다."));
     }
 

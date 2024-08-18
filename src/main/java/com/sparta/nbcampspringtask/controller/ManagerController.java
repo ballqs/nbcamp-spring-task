@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/manager")
+@RequestMapping("/api/v2")
 public class ManagerController {
 
     private final ManagerService managerService;
@@ -32,7 +32,7 @@ public class ManagerController {
      * @return 등록된 관리자 정보와 성공 메시지를 포함하는 ResponseEntity 객체
      * @author 황호진
      */
-    @PostMapping("/create")
+    @PostMapping("/managers")
     public ResponseEntity<ResponseDto<ManagerSelectDto>> createManager(@Valid @RequestBody ManagerInsertDto managerInsertDto) {
         return ResponseEntity
                 .status(HttpStatus.OK)
